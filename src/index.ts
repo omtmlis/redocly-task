@@ -19,8 +19,8 @@ program
   .description(
     "CLI tool to update package.json in Bitbucket repo and open a pull request"
   )
-  .option("-pkg, --package <package>", "Package name to update")
-  .option("-v, --version <version>", "New version of the package")
+  .requiredOption("-pkg, --package <package>", "Package name to update")
+  .requiredOption("-v, --version <version>", "New version of the package")
   .option("-r, --reposlug <reposlug>", "Repository slug (optional)")
   .option("-w, --workspace <workspace>", "Workspace (optional)")
   .parse(process.argv);
