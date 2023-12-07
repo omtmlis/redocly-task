@@ -19,16 +19,16 @@ program
   .description(
     "CLI tool to update package.json in Bitbucket repo and open a pull request"
   )
-  .option("-pkg, --package <package>", "Package name to update")
-  .option("-v, --version <version>", "New version of the package")
+  .requiredOption("-pkg, --package <package>", "Package name to update")
+  .requiredOption("-v, --version <version>", "New version of the package")
   .option("-r, --reposlug <reposlug>", "Repository slug (optional)")
   .option("-w, --workspace <workspace>", "Workspace (optional)")
   .parse(process.argv);
 
 const options = program.opts();
 
-const packageName = options.package || "2";
-const packageVersion = options.version || "3";
+const packageName = options.package || "test";
+const packageVersion = options.version || "test";
 const repoSlug = options.reposlug || process.env.REPO_SLUG;
 const workspace = options.workspace || process.env.WORKSPACE;
 

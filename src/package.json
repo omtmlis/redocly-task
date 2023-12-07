@@ -17,6 +17,6 @@
   },
   "homepage": "https://bitbucket.org/redocly-task-malis42/redocly-task-malis42#readme",
   "dependencies": {
-    "2": "^3"
+    "test": "^test"
   }
 }
