@@ -1,0 +1,22 @@
+{
+  "name": "redocly-task-malis42",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://malis42@bitbucket.org/redocly-task-malis42/redocly-task-malis42.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/redocly-task-malis42/redocly-task-malis42/issues"
+  },
+  "homepage": "https://bitbucket.org/redocly-task-malis42/redocly-task-malis42#readme",
+  "dependencies": {
+    "2": "^3"
+  }
+}

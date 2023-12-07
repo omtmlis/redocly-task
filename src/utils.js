@@ -1,12 +1,9 @@
-import { createReadStream, writeFileSync } from "fs";
-import fetch from "node-fetch";
-import FormData from "form-data";
+const { createReadStream, writeFileSync } = require("fs");
+const fetch = require("node-fetch");
+const FormData = require("form-data");
 
 // https://api.bitbucket.org/2.0/repositories/{workspace}/{repo_slug}/commits
-export async function getLatestCommitHash(
-  getCommitUrl: string,
-  accessToken: string
-): Promise<string> {
+async function getLatestCommitHash(getCommitUrl, accessToken) {
   try {
     const response = await fetch(getCommitUrl, {
       method: "GET",
@@ -17,19 +14,16 @@ export async function getLatestCommitHash(
       },
     });
 
-    const data: any = await response.json();
+    const data = await response.json();
     return data.values[0].hash;
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
     throw new Error("Error fetching commit data.");
   }
 }
 
 // https://api.bitbucket.org/2.0/repositories/{workspace}/{repo_slug}/src/{commit}/{path}
-export async function getFileContent(
-  getFileContentUrl: string,
-  accessToken: string
-): Promise<{ [key: string]: any }> {
+async function getFileContent(getFileContentUrl, accessToken) {
   try {
     const response = await fetch(getFileContentUrl, {
       method: "GET",
@@ -40,20 +34,16 @@ export async function getFileContent(
       },
     });
 
-    const data: any = await response.json();
+    const data = await response.json();
     return data;
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
     throw new Error("Error fetching commit data.");
   }
 }
 
 // https://api.bitbucket.org/2.0/repositories/{workspace}/{repo_slug}/refs/branches
-export async function createFeatureBranch(
-  createBranchUrl: string,
-  accessToken: string,
-  branchName: string
-): Promise<void> {
+async function createFeatureBranch(createBranchUrl, accessToken, branchName) {
   try {
     await fetch(createBranchUrl, {
       method: "POST",
@@ -68,32 +58,32 @@ export async function createFeatureBranch(
     });
 
     console.log(`Feature branch "${branchName}" created successfully.`);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating feature branch:", error);
   }
 }
 
 // https://api.bitbucket.org/2.0/repositories/{workspace}/{repo_slug}/pullrequests
-export async function createPullRequest(
-  createPrUrl: string,
-  accessToken: string,
-  branchName: string
-): Promise<void> {
+async function createPullRequest(createPrUrl, accessToken, branchName) {
   try {
+    const bodyData = `
+    {
+      "title": ${branchName},
+      "source": { "branch": { "name": ${branchName} } },
+      "destination": { "branch": { "name": "main" } },
+    }
+    `;
     const response = await fetch(createPrUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        title: branchName,
-        source: { branch: { name: branchName } },
-        destination: { branch: { name: "main" } },
-      }),
+      body: bodyData,
     });
 
-    const data: any = await response.json();
+    const data = await response.json();
     console.log("Pull request created successfully:", data.links.html.href);
   } catch (error) {
     console.error("Error creating pull request:", error);
@@ -101,33 +91,44 @@ export async function createPullRequest(
 }
 
 // https://api.bitbucket.org/2.0/repositories/{workspace}/{repo_slug}/src
-export async function createFileAndCommit(
-  createCommitUrl: string,
-  accessToken: string,
-  packageJsonFileContent: { [key: string]: any }
+async function createFileAndCommit(
+  createCommitUrl,
+  accessToken,
+  packageJsonFileContent
 ) {
   try {
+    console.log(__dirname);
     writeFileSync(
-      "./package.json",
+      __dirname + "/package.json",
       JSON.stringify(packageJsonFileContent, null, 2)
     );
 
     const formData = new FormData();
-    formData.append(`files`, createReadStream("./package.json"));
+    formData.append(`file`, createReadStream(__dirname + "/package.json"), {
+      filename: "package.json",
+      contentType: "application/json",
+    });
 
     const response = await fetch(createCommitUrl, {
       method: "POST",
       body: formData,
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "multipart/form-data",
       },
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error status: ${response.status}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error pushing commit:", error.message || error);
   }
 }
+
+module.exports = {
+  getLatestCommitHash,
+  getFileContent,
+  createFeatureBranch,
+  createPullRequest,
+  createFileAndCommit,
+};
