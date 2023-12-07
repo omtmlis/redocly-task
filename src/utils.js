@@ -97,7 +97,6 @@ async function createFileAndCommit(
   packageJsonFileContent
 ) {
   try {
-    console.log(__dirname);
     writeFileSync(
       __dirname + "/package.json",
       JSON.stringify(packageJsonFileContent, null, 2)
