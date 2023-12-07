@@ -1,0 +1,23 @@
+# Dependency directories
+node_modules/
+
+# TypeScript
+*.tsbuildinfo
+
+# Distribution directories
+/dist/
+/out/
+
+# Environment files
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Dependency lock files
+package-lock.json
+yarn.lock
